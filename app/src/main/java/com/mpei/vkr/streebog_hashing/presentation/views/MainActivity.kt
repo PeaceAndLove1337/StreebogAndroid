@@ -1,4 +1,4 @@
-package com.mpei.vkr.streebog_hashing.presentation
+package com.mpei.vkr.streebog_hashing.presentation.views
 
 import android.Manifest
 import android.content.ClipData
@@ -22,6 +22,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.mpei.vkr.streebog_hashing.R
+import com.mpei.vkr.streebog_hashing.presentation.ProgressHelper
+import com.mpei.vkr.streebog_hashing.presentation.viewmodels.MainViewModel
 
 class MainActivity : AppCompatActivity() {
 
@@ -48,7 +50,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         findViews()
-
         initButtons()
         initResultEditText()
         requestPermissions()
@@ -75,7 +76,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initObservers() {
-        mainViewModel.getHashLiveData().observe(this){
+        mainViewModel.getHashLiveData().observe(this) {
             editTextResultOfHashing.text = it
             makeToastHashIsComplete()
             makeElementsIsEnabled(true)
@@ -83,9 +84,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun createProgressHelper()
-         = ProgressHelper(progressBar, Handler())
-
+    private fun createProgressHelper() = ProgressHelper(progressBar, Handler())
 
     private fun initButtons() {
         buttonChooseFile.setOnClickListener {

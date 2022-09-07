@@ -1,6 +1,5 @@
 package com.mpei.vkr.streebog_hashing.domain.hashing;
 
-
 import com.mpei.vkr.streebog_hashing.domain.utils.ArrayHelper;
 import com.mpei.vkr.streebog_hashing.domain.utils.TypeConverter;
 import com.mpei.vkr.streebog_hashing.presentation.ProgressHelper;

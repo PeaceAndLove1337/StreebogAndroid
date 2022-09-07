@@ -17,7 +17,7 @@ public class NumberPrinter {
     }
 
     @SuppressLint("NewApi")
-    public static void PrintUbyteArray(byte[] inputArray) {
+    public static void PrintUByteArray(byte[] inputArray) {
         int[] resultArray = new int[inputArray.length];
         for (int i = 0; i < inputArray.length; i++) {
             resultArray[i] = Byte.toUnsignedInt(inputArray[i]);
@@ -42,7 +42,7 @@ public class NumberPrinter {
         System.out.println();
     }
 
-    public static void printByteInBinary(byte input){
+    public static void printByteInBinary(byte input) {
         System.out.println(String.format("%8s", Integer.toBinaryString(input & 0xFF)).replace(' ', '0'));
     }
 

@@ -1,9 +1,10 @@
-package com.mpei.vkr.streebog_hashing.presentation
+package com.mpei.vkr.streebog_hashing.presentation.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mpei.vkr.streebog_hashing.domain.hashing.StreebogHasher
+import com.mpei.vkr.streebog_hashing.presentation.ProgressHelper
 
 class MainViewModel : ViewModel() {
 

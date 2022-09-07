@@ -13,7 +13,7 @@
         android:roundIcon="@drawable/main_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.Streebog_hashing">
-        <activity android:name=".presentation.MainActivity"
+        <activity android:name=".presentation.views.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -8,7 +8,7 @@ public class TypeConverter {
         throw new Exception("Can't create instance of this util class");
     }
 
-    public static int createNumberFromByteArray(byte[] inputByteArray){
+    public static int createNumberFromByteArray(byte[] inputByteArray) {
         int result = 0;
         for (byte b : inputByteArray) {
             result = (result << 8) + (b & 0xFF);
@@ -16,7 +16,7 @@ public class TypeConverter {
         return result;
     }
 
-    public static byte[] createByteArrayFromInt(int inputNumber){
+    public static byte[] createByteArrayFromInt(int inputNumber) {
         byte[] bytes = new byte[Integer.BYTES];
         int length = bytes.length;
         for (int i = 0; i < length; i++) {
@@ -26,7 +26,7 @@ public class TypeConverter {
         return bytes;
     }
 
-    public static byte[] create64ByteArrayFromInt(int inputNumber){
+    public static byte[] create64ByteArrayFromInt(int inputNumber) {
         ByteBuffer bb = ByteBuffer.allocate(4);
         bb.putInt(inputNumber);
         byte[] bytes = bb.array();
