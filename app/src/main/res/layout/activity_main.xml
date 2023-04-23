@@ -88,7 +88,7 @@
                 android:text="Получить хеш  файла"
                 app:layout_constraintEnd_toStartOf="@+id/button_hash_text"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+                app:layout_constraintTop_toBottomOf="@+id/radioGroupRealization" />
 
             <Button
                 android:id="@+id/button_hash_text"
@@ -103,7 +103,7 @@
                 android:text="Получить хеш текста"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/button_hash_file"
-                app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+                app:layout_constraintTop_toBottomOf="@+id/radioGroupRealization" />
 
             <ImageView
                 android:id="@+id/imageView5"
@@ -132,8 +132,6 @@
                 app:layout_constraintEnd_toEndOf="@+id/imageView5"
                 app:layout_constraintStart_toStartOf="@+id/imageView5"
                 app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-
 
             <ImageView
                 android:id="@+id/imageView4"
@@ -176,7 +174,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
             <RadioGroup
-                android:id="@+id/radioGroup"
+                android:id="@+id/radioGroupHashOutType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
@@ -200,6 +198,52 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="512 бит"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+
+            </RadioGroup>
+
+            <RadioGroup
+                android:id="@+id/radioGroupRealization"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/radioGroupHashOutType">
+
+                <RadioButton
+                    android:id="@+id/radioButtonNonOptimizedRealization"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Неоптимизированная реализация"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+
+                <RadioButton
+                    android:id="@+id/radioButtonOptimizedRealization"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Оптимизированная реализация"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+
+                <RadioButton
+                    android:id="@+id/radioButtonBackendOptimizedRealization"
+                    android:layout_width="385dp"
+                    android:layout_height="match_parent"
+                    android:text="Вычисление на удаленной ЭВМ"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+
+                <RadioButton
+                    android:id="@+id/radioButtonBackendOptimizedSteganography"
+                    android:layout_width="385dp"
+                    android:layout_height="match_parent"
+                    android:text="Стеганография + удаленная ЭВМ"
                     android:textColor="@color/white"
                     android:textSize="18sp" />
 
@@ -230,6 +274,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView5" />
 
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Выберите реализацию криптоалгоритма"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.20"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/radioGroupRealization" />
 
             <TextView
                 android:id="@+id/textView4"

@@ -38,12 +38,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var radioButton256: RadioButton
     private lateinit var radioButton512: RadioButton
 
+    private lateinit var radioButtonNonOptimized: RadioButton
+    private lateinit var radioButtonOptimized: RadioButton
+    private lateinit var radioButtonOnBack: RadioButton
+    private lateinit var radioButtonOnBackSteganography: RadioButton
+
+
     private lateinit var mainViewModel: MainViewModel
 
     private lateinit var byteArrayOfSelectedFile: ByteArray
-
-    private val FILE_SELECT_CODE = 1
-    private val EXTERNAL_STORAGE_PERMISSION_CODE = 23
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,6 +72,10 @@ class MainActivity : AppCompatActivity() {
         progressBar = findViewById(R.id.progressBar)
         currentFileTextView = findViewById(R.id.file_name_text_view)
         currentFileNameTextView = findViewById(R.id.current_file_text_view)
+        radioButtonNonOptimized = findViewById(R.id.radioButtonNonOptimizedRealization)
+        radioButtonOptimized = findViewById(R.id.radioButtonOptimizedRealization)
+        radioButtonOnBack = findViewById(R.id.radioButtonBackendOptimizedRealization)
+        radioButtonOnBackSteganography = findViewById(R.id.radioButtonBackendOptimizedSteganography)
     }
 
     private fun initViewModel() {
@@ -234,5 +241,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun makeToastHashIsComplete() {
         Toast.makeText(this, "Хеширование произведено!", Toast.LENGTH_SHORT).show()
+    }
+
+    private companion object {
+        val FILE_SELECT_CODE = 1
+        val EXTERNAL_STORAGE_PERMISSION_CODE = 23
     }
 }
