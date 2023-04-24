@@ -11,8 +11,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.provider.OpenableColumns
 import android.util.Log
+import android.view.View
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.RadioButton
 import android.widget.TextView
@@ -29,8 +29,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var buttonChooseFile: Button
     private lateinit var buttonGetHashOfFile: Button
-    private lateinit var buttonGetHashOfText: Button
-    private lateinit var editTextHashingText: EditText
     private lateinit var currentFileTextView: TextView
     private lateinit var currentFileNameTextView: TextView
     private lateinit var editTextResultOfHashing: TextView
@@ -42,6 +40,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var radioButtonOptimized: RadioButton
     private lateinit var radioButtonOnBack: RadioButton
     private lateinit var radioButtonOnBackSteganography: RadioButton
+
+    private lateinit var waitBar: ProgressBar
 
     private lateinit var mainViewModel: MainViewModel
 
@@ -63,8 +63,6 @@ class MainActivity : AppCompatActivity() {
     private fun findViews() {
         buttonChooseFile = findViewById(R.id.button_choose_file)
         buttonGetHashOfFile = findViewById(R.id.button_hash_file)
-        buttonGetHashOfText = findViewById(R.id.button_hash_text)
-        editTextHashingText = findViewById(R.id.editTextHashingText)
         editTextResultOfHashing = findViewById(R.id.editTextResultOfHashing)
         radioButton256 = findViewById(R.id.radioButton256)
         radioButton512 = findViewById(R.id.radioButton512)
@@ -75,6 +73,7 @@ class MainActivity : AppCompatActivity() {
         radioButtonOptimized = findViewById(R.id.radioButtonOptimizedRealization)
         radioButtonOnBack = findViewById(R.id.radioButtonBackendOptimizedRealization)
         radioButtonOnBackSteganography = findViewById(R.id.radioButtonBackendOptimizedSteganography)
+        waitBar = findViewById(R.id.wait_bar)
     }
 
     private fun initViewModel() {
@@ -83,6 +82,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initObservers() {
         mainViewModel.getHashLiveData().observe(this) {
+            waitBar.visibility = View.GONE
             editTextResultOfHashing.text = it
             makeToastHashIsComplete()
             makeElementsIsEnabled(true)
@@ -108,6 +108,7 @@ class MainActivity : AppCompatActivity() {
                     makeToastModeNotSelected()
                 } else {
                     makeElementsIsEnabled(false)
+                    waitBar.visibility = View.VISIBLE
                     when {
                         radioButtonNonOptimized.isChecked -> {
                             when {
@@ -150,67 +151,6 @@ class MainActivity : AppCompatActivity() {
                                 )
                                 radioButton512.isChecked -> mainViewModel.hash512SteganographyByBackend(
                                     byteArrayOfSelectedFile
-                                )
-                            }
-                        }
-                        else -> {
-                            makeToastHashTypeNotSelected()
-                        }
-                    }
-                }
-            }
-        }
-        buttonGetHashOfText.setOnClickListener {
-            val textToHashing = editTextHashingText.text.toString()
-            if (textToHashing.isEmpty()) {
-                makeToastEmptyEditText()
-            } else {
-                if (!radioButton256.isChecked && !radioButton512.isChecked) {
-                    makeToastModeNotSelected()
-                } else {
-                    makeElementsIsEnabled(false)
-                    when {
-                        radioButtonNonOptimized.isChecked -> {
-                            when {
-                                radioButton256.isChecked -> mainViewModel.hash256NonOptimized(
-                                    textToHashing.toByteArray(),
-                                    createProgressHelper()
-                                )
-                                radioButton512.isChecked -> mainViewModel.hash512NonOptimized(
-                                    textToHashing.toByteArray(),
-                                    createProgressHelper()
-                                )
-                            }
-                        }
-                        radioButtonOptimized.isChecked -> {
-                            when {
-                                radioButton256.isChecked -> mainViewModel.hash256Optimized(
-                                    textToHashing.toByteArray(),
-                                    createProgressHelper()
-                                )
-                                radioButton512.isChecked -> mainViewModel.hash512Optimized(
-                                    textToHashing.toByteArray(),
-                                    createProgressHelper()
-                                )
-                            }
-                        }
-                        radioButtonOnBack.isChecked -> {
-                            when {
-                                radioButton256.isChecked -> mainViewModel.hash256DefaultByBackend(
-                                    textToHashing.toByteArray()
-                                )
-                                radioButton512.isChecked -> mainViewModel.hash512DefaultByBackend(
-                                    textToHashing.toByteArray()
-                                )
-                            }
-                        }
-                        radioButtonOnBackSteganography.isChecked -> {
-                            when {
-                                radioButton256.isChecked -> mainViewModel.hash256SteganographyByBackend(
-                                    textToHashing.toByteArray()
-                                )
-                                radioButton512.isChecked -> mainViewModel.hash512SteganographyByBackend(
-                                    textToHashing.toByteArray()
                                 )
                             }
                         }
@@ -250,9 +190,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun makeElementsIsEnabled(isEnabled: Boolean) {
         buttonGetHashOfFile.isEnabled = isEnabled
-        buttonGetHashOfText.isEnabled = isEnabled
         buttonChooseFile.isEnabled = isEnabled
-        editTextHashingText.isEnabled = isEnabled
+        radioButtonOnBackSteganography.isEnabled = isEnabled
+        radioButtonOnBack.isEnabled = isEnabled
+        radioButton256.isEnabled = isEnabled
+        radioButton512.isEnabled = isEnabled
+        radioButtonOptimized.isEnabled = isEnabled
+        radioButtonNonOptimized.isEnabled = isEnabled
         editTextResultOfHashing.isEnabled = isEnabled
     }
 
@@ -290,10 +234,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return result
-    }
-
-    private fun makeToastEmptyEditText() {
-        Toast.makeText(this, "Текст для хеширования пуст!", Toast.LENGTH_LONG).show()
     }
 
     private fun makeToastNotChosenFile() {

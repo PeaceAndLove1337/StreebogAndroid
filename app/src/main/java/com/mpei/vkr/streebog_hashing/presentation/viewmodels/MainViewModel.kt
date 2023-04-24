@@ -92,22 +92,19 @@ class MainViewModel : ViewModel() {
         Thread {
             val client = OkHttpClient()
             try {
-                /*val body = MultipartBody.Builder()
+                val body = MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
                     .addFormDataPart(
                         "file", "file_name",
                         byteArray.toRequestBody(
                             "multipart/form-data".toMediaTypeOrNull()
                         )
-                    )
-                    .build()*/
-                val body = RequestBody.create("application/octet-stream".toMediaTypeOrNull(), byteArray)
+                    ).build()
 
                 val request = Request.Builder()
                     .url(STREEBOG_DEFAULT_512_URL)
                     .post(body)
                     .build()
-
                 val response = client.newCall(request).execute()
                 val res = response.body?.bytes()
                 hashResultLiveData.postValue(res?.joinToString(separator = "") { eachByte -> "%02x".format(eachByte) })
