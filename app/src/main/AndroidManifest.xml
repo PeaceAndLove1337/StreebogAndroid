@@ -4,7 +4,7 @@
 
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -12,6 +12,7 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/main_icon"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Streebog_hashing">
         <activity android:name=".presentation.views.MainActivity"
             android:screenOrientation="portrait">

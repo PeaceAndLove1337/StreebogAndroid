@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var radioButtonOnBack: RadioButton
     private lateinit var radioButtonOnBackSteganography: RadioButton
 
-
     private lateinit var mainViewModel: MainViewModel
 
     private lateinit var byteArrayOfSelectedFile: ByteArray
@@ -101,56 +100,126 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(Intent.createChooser(intent, "Select a file to Encode"), FILE_SELECT_CODE)
             buttonGetHashOfFile.isEnabled = true
         }
-
         buttonGetHashOfFile.setOnClickListener {
-            when {
-                radioButton256.isChecked -> {
-                    if (!this::byteArrayOfSelectedFile.isInitialized) {
-                        makeToastNotChoosenFile()
-                    } else {
-                        makeElementsIsEnabled(false)
-                        mainViewModel.hash256InThread(byteArrayOfSelectedFile, createProgressHelper())
+            if (!this::byteArrayOfSelectedFile.isInitialized) {
+                makeToastNotChosenFile()
+            } else {
+                if (!radioButton256.isChecked && !radioButton512.isChecked) {
+                    makeToastModeNotSelected()
+                } else {
+                    makeElementsIsEnabled(false)
+                    when {
+                        radioButtonNonOptimized.isChecked -> {
+                            when {
+                                radioButton256.isChecked -> mainViewModel.hash256NonOptimized(
+                                    byteArrayOfSelectedFile,
+                                    createProgressHelper()
+                                )
+                                radioButton512.isChecked -> mainViewModel.hash512NonOptimized(
+                                    byteArrayOfSelectedFile,
+                                    createProgressHelper()
+                                )
+                            }
+                        }
+                        radioButtonOptimized.isChecked -> {
+                            when {
+                                radioButton256.isChecked -> mainViewModel.hash256Optimized(
+                                    byteArrayOfSelectedFile,
+                                    createProgressHelper()
+                                )
+                                radioButton512.isChecked -> mainViewModel.hash512Optimized(
+                                    byteArrayOfSelectedFile,
+                                    createProgressHelper()
+                                )
+                            }
+                        }
+                        radioButtonOnBack.isChecked -> {
+                            when {
+                                radioButton256.isChecked -> mainViewModel.hash256DefaultByBackend(
+                                    byteArrayOfSelectedFile
+                                )
+                                radioButton512.isChecked -> mainViewModel.hash512DefaultByBackend(
+                                    byteArrayOfSelectedFile
+                                )
+                            }
+                        }
+                        radioButtonOnBackSteganography.isChecked -> {
+                            when {
+                                radioButton256.isChecked -> mainViewModel.hash256SteganographyByBackend(
+                                    byteArrayOfSelectedFile
+                                )
+                                radioButton512.isChecked -> mainViewModel.hash512SteganographyByBackend(
+                                    byteArrayOfSelectedFile
+                                )
+                            }
+                        }
+                        else -> {
+                            makeToastHashTypeNotSelected()
+                        }
                     }
-                }
-                radioButton512.isChecked -> {
-                    if (!this::byteArrayOfSelectedFile.isInitialized) {
-                        makeToastNotChoosenFile()
-                    } else {
-                        makeElementsIsEnabled(false)
-                        mainViewModel.hash512InThread(byteArrayOfSelectedFile, createProgressHelper())
-                    }
-                }
-                else -> {
-                    makeToastHashTypeNotSelected()
                 }
             }
         }
-
         buttonGetHashOfText.setOnClickListener {
             val textToHashing = editTextHashingText.text.toString()
-
             if (textToHashing.isEmpty()) {
                 makeToastEmptyEditText()
             } else {
-                when {
-                    radioButton256.isChecked -> {
-                        val textToHash = editTextHashingText.text.toString()
-                        val textInByteArray = textToHash.toByteArray()
-                        makeElementsIsEnabled(false)
-                        mainViewModel.hash256InThread(textInByteArray, createProgressHelper())
-                    }
-                    radioButton512.isChecked -> {
-                        val textToHash = editTextHashingText.text.toString()
-                        val textInByteArray = textToHash.toByteArray()
-                        makeElementsIsEnabled(false)
-                        mainViewModel.hash512InThread(textInByteArray, createProgressHelper())
-                    }
-                    else -> {
-                        makeToastHashTypeNotSelected()
+                if (!radioButton256.isChecked && !radioButton512.isChecked) {
+                    makeToastModeNotSelected()
+                } else {
+                    makeElementsIsEnabled(false)
+                    when {
+                        radioButtonNonOptimized.isChecked -> {
+                            when {
+                                radioButton256.isChecked -> mainViewModel.hash256NonOptimized(
+                                    textToHashing.toByteArray(),
+                                    createProgressHelper()
+                                )
+                                radioButton512.isChecked -> mainViewModel.hash512NonOptimized(
+                                    textToHashing.toByteArray(),
+                                    createProgressHelper()
+                                )
+                            }
+                        }
+                        radioButtonOptimized.isChecked -> {
+                            when {
+                                radioButton256.isChecked -> mainViewModel.hash256Optimized(
+                                    textToHashing.toByteArray(),
+                                    createProgressHelper()
+                                )
+                                radioButton512.isChecked -> mainViewModel.hash512Optimized(
+                                    textToHashing.toByteArray(),
+                                    createProgressHelper()
+                                )
+                            }
+                        }
+                        radioButtonOnBack.isChecked -> {
+                            when {
+                                radioButton256.isChecked -> mainViewModel.hash256DefaultByBackend(
+                                    textToHashing.toByteArray()
+                                )
+                                radioButton512.isChecked -> mainViewModel.hash512DefaultByBackend(
+                                    textToHashing.toByteArray()
+                                )
+                            }
+                        }
+                        radioButtonOnBackSteganography.isChecked -> {
+                            when {
+                                radioButton256.isChecked -> mainViewModel.hash256SteganographyByBackend(
+                                    textToHashing.toByteArray()
+                                )
+                                radioButton512.isChecked -> mainViewModel.hash512SteganographyByBackend(
+                                    textToHashing.toByteArray()
+                                )
+                            }
+                        }
+                        else -> {
+                            makeToastHashTypeNotSelected()
+                        }
                     }
                 }
             }
-
         }
     }
 
@@ -227,7 +296,7 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, "Текст для хеширования пуст!", Toast.LENGTH_LONG).show()
     }
 
-    private fun makeToastNotChoosenFile() {
+    private fun makeToastNotChosenFile() {
         Toast.makeText(this, "Не выбран файл для хеширования!", Toast.LENGTH_LONG).show()
     }
 
@@ -243,8 +312,12 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, "Хеширование произведено!", Toast.LENGTH_SHORT).show()
     }
 
+    private fun makeToastModeNotSelected() {
+        Toast.makeText(this, "Не выбрана реализация хеширования!", Toast.LENGTH_LONG).show()
+    }
+
     private companion object {
-        val FILE_SELECT_CODE = 1
-        val EXTERNAL_STORAGE_PERMISSION_CODE = 23
+        const val FILE_SELECT_CODE = 1
+        const val EXTERNAL_STORAGE_PERMISSION_CODE = 23
     }
 }

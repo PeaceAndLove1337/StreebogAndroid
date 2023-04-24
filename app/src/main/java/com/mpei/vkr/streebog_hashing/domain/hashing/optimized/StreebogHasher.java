@@ -1,4 +1,4 @@
-package com.mpei.vkr.streebog_hashing.domain.hashing;
+package com.mpei.vkr.streebog_hashing.domain.hashing.optimized;
 
 import com.mpei.vkr.streebog_hashing.domain.utils.ArrayHelper;
 import com.mpei.vkr.streebog_hashing.domain.utils.TypeConverter;
@@ -217,13 +217,12 @@ public class StreebogHasher {
             System.arraycopy(inputArray, 0, blockToSupply, 0, remainderOfDiv);
             currentBlock = supplementIncompleteBlockByAlgorithm(blockToSupply);
             initVectorH = compressionFunction(initVectorH, currentBlock, length);
-
             length = sumByteArrayAndInt(length, remainderOfDiv * 8);
 
             sigmaSum = sumTwoByteArrays512(sigmaSum, currentBlock);
         }
-
         initVectorH = compressionFunction(initVectorH, length, getEmptyByteArrayOfSize64());
+
         initVectorH = compressionFunction(initVectorH, sigmaSum, getEmptyByteArrayOfSize64());
 
         return initVectorH;
@@ -239,7 +238,19 @@ public class StreebogHasher {
     }
 
     private byte[] sumTwoByteArrays512(byte[] firstArray, byte[] secondArray) {
-        BigInteger biSigma = new BigInteger(firstArray);
+        BigInteger bigInt1 = new BigInteger(1, firstArray);
+        BigInteger bigInt2 = new BigInteger(1, secondArray);
+        BigInteger mod = BigInteger.valueOf(2).pow(512);
+        BigInteger sum = bigInt1.add(bigInt2).mod(mod);
+        byte[] resultBytes = sum.toByteArray();
+        if (resultBytes.length > 64) {
+            byte[] cutedArray = new byte[64];
+            System.arraycopy(resultBytes, 0, cutedArray, 0, 64);
+            return cutedArray;
+        } else {
+            return resultBytes;
+        }
+        /*BigInteger biSigma = new BigInteger(firstArray);
         BigInteger biCurrBlock = new BigInteger(secondArray);
         firstArray = biSigma.add(biCurrBlock).toByteArray();
         if (firstArray.length < 64) {
@@ -250,7 +261,7 @@ public class StreebogHasher {
             System.arraycopy(firstArray, 1, cutedSigma, 0, 64);
             firstArray = cutedSigma;
         }
-        return firstArray;
+        return firstArray;*/
     }
 
     private byte[] getEmptyByteArrayOfSize64() {
