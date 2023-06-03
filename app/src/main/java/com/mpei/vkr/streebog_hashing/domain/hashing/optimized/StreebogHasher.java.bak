@@ -247,13 +247,21 @@ public class StreebogHasher {
             byte[] cutedArray = new byte[64];
             System.arraycopy(resultBytes, 0, cutedArray, 0, 64);
             return cutedArray;
-        } else if (resultBytes.length < 64){
-            byte[] addedArray = new byte[64];
-            System.arraycopy(resultBytes, 0, addedArray, 64-resultBytes.length, resultBytes.length);
-            return addedArray;
         } else {
             return resultBytes;
         }
+        /*BigInteger biSigma = new BigInteger(firstArray);
+        BigInteger biCurrBlock = new BigInteger(secondArray);
+        firstArray = biSigma.add(biCurrBlock).toByteArray();
+        if (firstArray.length < 64) {
+            firstArray = supplementBlockTo64Bytes(firstArray);
+        }
+        if (firstArray.length > 64) {
+            byte[] cutedSigma = new byte[64];
+            System.arraycopy(firstArray, 1, cutedSigma, 0, 64);
+            firstArray = cutedSigma;
+        }
+        return firstArray;*/
     }
 
     private byte[] getEmptyByteArrayOfSize64() {

@@ -211,10 +211,10 @@
                     android:textSize="18sp" />
 
                 <RadioButton
-                    android:id="@+id/radioButtonBackendOptimizedSteganography"
+                    android:id="@+id/radioButtonBackendOptimizedSsl"
                     android:layout_width="385dp"
                     android:layout_height="match_parent"
-                    android:text="Стеганография + удаленная ЭВМ"
+                    android:text="Удаленная ЭВМ + https"
                     android:textColor="@color/white"
                     android:textSize="18sp" />
 

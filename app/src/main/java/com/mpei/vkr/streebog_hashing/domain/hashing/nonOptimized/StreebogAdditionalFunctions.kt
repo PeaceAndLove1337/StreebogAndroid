@@ -120,7 +120,6 @@ class StreebogAdditionalFunctions {
             return res
         }
 
-        //todo INCORRECT!!!!
         fun addTwoUByteArraysMod512(firstArray: Array<UByte>, secondArray: Array<UByte>): Array<UByte> {
             val result: Array<UByte> = Array(firstArray.size) { 0U }
             var t: UInt = 0U

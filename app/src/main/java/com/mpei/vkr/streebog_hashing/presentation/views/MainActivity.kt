@@ -35,13 +35,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
     private lateinit var radioButton256: RadioButton
     private lateinit var radioButton512: RadioButton
+    private lateinit var waitBar: ProgressBar
 
     private lateinit var radioButtonNonOptimized: RadioButton
     private lateinit var radioButtonOptimized: RadioButton
     private lateinit var radioButtonOnBack: RadioButton
-    private lateinit var radioButtonOnBackSteganography: RadioButton
-
-    private lateinit var waitBar: ProgressBar
+    private lateinit var radioButtonOnBackSsl: RadioButton
 
     private lateinit var mainViewModel: MainViewModel
 
@@ -72,7 +71,7 @@ class MainActivity : AppCompatActivity() {
         radioButtonNonOptimized = findViewById(R.id.radioButtonNonOptimizedRealization)
         radioButtonOptimized = findViewById(R.id.radioButtonOptimizedRealization)
         radioButtonOnBack = findViewById(R.id.radioButtonBackendOptimizedRealization)
-        radioButtonOnBackSteganography = findViewById(R.id.radioButtonBackendOptimizedSteganography)
+        radioButtonOnBackSsl = findViewById(R.id.radioButtonBackendOptimizedSsl)
         waitBar = findViewById(R.id.wait_bar)
     }
 
@@ -82,6 +81,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun initObservers() {
         mainViewModel.getHashLiveData().observe(this) {
+            if (it == null) {
+                makeElementsIsEnabled(true)
+                waitBar.visibility = View.GONE
+                return@observe
+            }
             waitBar.visibility = View.GONE
             editTextResultOfHashing.text = it
             makeToastHashIsComplete()
@@ -110,53 +114,46 @@ class MainActivity : AppCompatActivity() {
                     makeElementsIsEnabled(false)
                     waitBar.visibility = View.VISIBLE
                     when {
-                        radioButtonNonOptimized.isChecked -> {
-                            when {
-                                radioButton256.isChecked -> mainViewModel.hash256NonOptimized(
-                                    byteArrayOfSelectedFile,
-                                    createProgressHelper()
-                                )
-                                radioButton512.isChecked -> mainViewModel.hash512NonOptimized(
-                                    byteArrayOfSelectedFile,
-                                    createProgressHelper()
-                                )
-                            }
+                        radioButtonNonOptimized.isChecked -> when {
+                            radioButton256.isChecked -> mainViewModel.hash256NonOptimized(
+                                byteArrayOfSelectedFile,
+                                createProgressHelper()
+                            )
+                            radioButton512.isChecked -> mainViewModel.hash512NonOptimized(
+                                byteArrayOfSelectedFile,
+                                createProgressHelper()
+                            )
                         }
-                        radioButtonOptimized.isChecked -> {
-                            when {
-                                radioButton256.isChecked -> mainViewModel.hash256Optimized(
-                                    byteArrayOfSelectedFile,
-                                    createProgressHelper()
-                                )
-                                radioButton512.isChecked -> mainViewModel.hash512Optimized(
-                                    byteArrayOfSelectedFile,
-                                    createProgressHelper()
-                                )
-                            }
+                        radioButtonOptimized.isChecked -> when {
+                            radioButton256.isChecked -> mainViewModel.hash256Optimized(
+                                byteArrayOfSelectedFile,
+                                createProgressHelper()
+                            )
+                            radioButton512.isChecked -> mainViewModel.hash512Optimized(
+                                byteArrayOfSelectedFile,
+                                createProgressHelper()
+                            )
                         }
-                        radioButtonOnBack.isChecked -> {
-                            when {
-                                radioButton256.isChecked -> mainViewModel.hash256DefaultByBackend(
-                                    byteArrayOfSelectedFile
-                                )
-                                radioButton512.isChecked -> mainViewModel.hash512DefaultByBackend(
-                                    byteArrayOfSelectedFile
-                                )
-                            }
+                        radioButtonOnBack.isChecked -> when {
+                            radioButton256.isChecked -> mainViewModel.hash256DefaultByBackend(
+                                byteArrayOfSelectedFile
+                            )
+                            radioButton512.isChecked -> mainViewModel.hash512DefaultByBackend(
+                                byteArrayOfSelectedFile
+                            )
                         }
-                        radioButtonOnBackSteganography.isChecked -> {
-                            when {
-                                radioButton256.isChecked -> mainViewModel.hash256SteganographyByBackend(
-                                    byteArrayOfSelectedFile
-                                )
-                                radioButton512.isChecked -> mainViewModel.hash512SteganographyByBackend(
-                                    byteArrayOfSelectedFile
-                                )
-                            }
+                        radioButtonOnBackSsl.isChecked -> when {
+                            radioButton256.isChecked -> mainViewModel.hash256ByBackendSsl(
+                                baseContext,
+                                byteArrayOfSelectedFile
+                            )
+                            radioButton512.isChecked -> mainViewModel.hash512ByBackendSsl(
+                                baseContext,
+                                byteArrayOfSelectedFile
+                            )
                         }
-                        else -> {
+                        else ->
                             makeToastHashTypeNotSelected()
-                        }
                     }
                 }
             }
@@ -191,7 +188,7 @@ class MainActivity : AppCompatActivity() {
     private fun makeElementsIsEnabled(isEnabled: Boolean) {
         buttonGetHashOfFile.isEnabled = isEnabled
         buttonChooseFile.isEnabled = isEnabled
-        radioButtonOnBackSteganography.isEnabled = isEnabled
+        radioButtonOnBackSsl.isEnabled = isEnabled
         radioButtonOnBack.isEnabled = isEnabled
         radioButton256.isEnabled = isEnabled
         radioButton512.isEnabled = isEnabled
@@ -220,9 +217,9 @@ class MainActivity : AppCompatActivity() {
         var result: String? = null
         if (uri.scheme == "content") {
             val cursor: Cursor? = contentResolver.query(uri, null, null, null, null)
-            cursor.use { cursor ->
-                if (cursor != null && cursor.moveToFirst()) {
-                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+            cursor.use { _cursor ->
+                if (_cursor != null && _cursor.moveToFirst()) {
+                    result = _cursor.getString(_cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
                 }
             }
         }
